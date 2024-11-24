@@ -1,0 +1,32 @@
+my-nodejs-mysql-project/
+│
+├── node_modules/             # External dependencies (installed by npm)
+├── public/                   # Static files (e.g., HTML, CSS, JS, images)
+│   └── index.html            # Example HTML file
+│
+├── src/                      # Main source code for the application
+│   ├── controllers/          # Controller files (handle requests, business logic)
+│   │   └── userController.js # User-related actions (e.g., create, list users)
+│   │
+│   ├── models/               # Database models (defines how data interacts with DB)
+│   │   └── userModel.js      # Defines SQL queries and interactions with users table
+│   │
+│   ├── routes/               # API route definitions (map routes to controllers)
+│   │   └── userRoutes.js     # Routes related to users (GET, POST, PUT, DELETE)
+│   │
+│   ├── config/               # Configuration files (e.g., database connection, environment variables)
+│   │   └── dbConfig.js       # MySQL database connection configuration
+│   │
+│   └── app.js                # Main application setup (Express app, middleware, etc.)
+│
+├── .env                      # Environment variables (e.g., database credentials)
+├── package.json              # Project metadata, dependencies, scripts
+├── package-lock.json         # Exact dependency versions
+├── README.md                 # Project documentation
+└── .gitignore                # Git ignore rules (e.g., node_modules, .env)
+
+
+
+
+
+
