@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diet Chart</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            flex-direction: column;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            border: 2px solid #ccc;
+            padding: 20px;
+            text-align: left;
+            background-color: #f9f9f9;
+            position: relative;
+
+        }
+
+
+        /* Navigation */
+        nav {
+            background-color: #333;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        /* nav a > img{
+            border-radius: 60px;
+            width: 50px;
+        } */
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            float: left;
+            display: block;
+        }
+
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        nav a.active {
+            background-color: #4caf50;
+        }
+
+        .header {
+            text-align: center;
+            /* background-image: url("./image/pn.jpeg");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain; */
+        }
+
+        .header h2 {
+            margin-top: 30px;
+            color: rgb(71, 206, 71);
+            font-size: 24px;
+        }
+
+        .header p {
+            font-size: 12px;
+        }
+
+        .label {
+            font-size: 16px;
+            margin-top: 1px;
+            display: block;
+        }
+
+        .input-line {
+            border-bottom: 1px solid #ccc;
+            margin: 10px 0;
+            padding-bottom: 5px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 10px;
+            background-color: rgb(71, 206, 71);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: rgb(51, 180, 51);
+        }
+
+        /* Styling the table */
+        .table-container {
+            width: 100%;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        .disclaimer {
+            font-size: 10px;
+            color: red;
+            margin-top: 20px;
+        }
+
+        .top-right-info {
+            position: absolute;
+            top: 10px;
+            right: 80px;
+            text-align: right;
+            font-size: 11px;
+        }
+
+        #search {
+            width: 70%;
+            height: 40px;
+            border-radius: 15px;
+            text-align: center;
+            display: block;
+            margin: auto;
+        }
+
+        #empty {
+            display: none;
+            text-align: center;
+            color: lightgray;
+            font-size: 70px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="#">Home</a>
+        <a href="diet.html">Add Patient</a>
+        <a href="dietlist.html">Diet list</a>
+        <a href="login.html" onclick="javascript:localStorage.clear()">Login</a>
+    </nav>
+
+    <div class="container">
+        <div class="btn"><button onclick="del()">Logout</button></div>
+
+        <div class="header">
+            <img style="width: 70px; border-radius:10px;float: left;" src="./image/pn.jpeg" alt="logo image">
+            <h2>PRAKRUTI NUTRITION </h2>
+            <p>Diet Chart (आहार तालिका)</p>
+
+
+        </div>
+        <input id="search" type="text" name="searchByName" id="searchByName" onkeyup="searchDietData(event)"
+            placeholder="search data by name">
+
+        <!-- Table for displaying diet data -->
+        <div class="table-container">
+
+            <table id="dietTable">
+                <thead>
+                    <tr>
+                        <th>Patient Name</th>
+                        <th>Early Morning</th>
+                        <th>Breakfast Time</th>
+                        <th>Lunch Time</th>
+                        <th>Post Lunch Snacks</th>
+                        <th>Dinner Time</th>
+                        <th>Late Night Snacks</th>
+                        <th>Oparation</th>
+                        <!--  <th>Next Consultation Date</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Diet data will be dynamically inserted here -->
+                </tbody>
+
+            </table>
+            <p id="empty">No data found</p>
+        </div>
+        <div class="disclaimer">
+            <!-- Go to login page <a href="login.html">Login here</a> -->
+            If Add new patient : <a href="diet.html">New Entry</a>
+        </div>
+    </div>
+
+    <script>
+        function del() {
+            localStorage.clear();
+            window.location.pathname = "login.html";
+        }
+        function isrender() {
+            let auth = JSON.parse(localStorage.getItem("token"));
+            // console.log(auth)
+            if (!auth) {
+                window.location.pathname = "login.html";
+            }
+        }
+        window.onload = isrender;
+
+        // const apiUrl = 'http://localhost:8080/diet'`;
+        // const apiUrl = `https://prakritibackend.onrender.com/diet`;
+        const apiUrl = `http://localhost:8080/api/diet`;
+
+
+
+        // Fetching data from API and populating the table
+        function fetchDietData() {
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    // console.log(data)
+                    const dietTableBody = document.querySelector('#dietTable tbody');
+                    dietTableBody.innerHTML = ''; // Clear any existing data
+
+                    if (data.length === 0) {
+                        dietTableBody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No data available</td></tr>';
+                        return;
+                    }
+
+                    data.forEach(item => {
+                        // console.log(item)
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${item.name}</td>
+                            <td>${item.earlyMorning}</td>
+                            <td>${item.breakfastTime}</td>
+                            <td>${item.lunchTime}</td>
+                            <td>${item.postLunchSnacks}</td>
+                            <td>${item.dinnerTime}</td>
+                            <td>${item.lateNightSnacks}</td>
+                            <td><a href="showpage.html?id=${item.id}">Show </a><br><a href="diet.html?id=${item.id}">Edit &#128393;</a><br><button onclick="delData('${item.id}')">Delete</button></td>
+                          
+                        `;
+                        dietTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching diet data:', error);
+                    alert('There was an error fetching the diet data.');
+                });
+        }
+
+
+        // Call fetchDietData to populate the table initially
+        fetchDietData();
+
+        // Function to save form data (your existing logic)
+        // function saveFormData() {
+        //     const name = document.getElementById('patient-name').value;
+        //     const earlyMorning = document.getElementById('early-morning').value;
+        //     const breakfastTime = document.getElementById('breakfast-time').value;
+        //     const lunchTime = document.getElementById('lunch-time').value;
+        //     const postLunchSnacks = document.getElementById('post-lunch-snacks').value;
+        //     const dinnerTime = document.getElementById('dinner-time').value;
+        //     const lateNightSnacks = document.getElementById('late-night-snacks').value;
+        //     const startDate = document.getElementById('startDate').value;
+        //     const nextDate = document.getElementById('nextDate').value;
+
+        //     const formData = {
+        //         name: name,
+        //         earlyMorning: earlyMorning,
+        //         breakfastTime: breakfastTime,
+        //         lunchTime: lunchTime,
+        //         postLunchSnacks: postLunchSnacks,
+        //         dinnerTime: dinnerTime,
+        //         lateNightSnacks: lateNightSnacks,
+        //         startDate: startDate,
+        //         nextDate: nextDate
+        //     };
+
+        //     fetch('http://localhost:8080/diet', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify(formData)
+        //     })
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             if (data?.message === "Diet already exists") {
+        //                 alert('Diet data already exists for this patient.');
+        //             } else {
+        //                 alert('Form data saved successfully!');
+        //                 fetchDietData(); // Refresh the table after adding the new data
+        //             }
+        //         })
+        //         .catch(error => {
+        //             console.error('Error saving data:', error);
+        //             alert('There was an error saving the form data.');
+        //         });
+        // }
+
+        // Add event listener for form submission
+        // document.querySelector('.button').addEventListener('click', function (event) {
+        //     event.preventDefault();
+        //     saveFormData();
+        // });
+
+        // Delete data in table 
+        function delData(key) {
+            const isTrue = confirm("You want to detete this user data to click okay");
+            if (isTrue) {
+                fetch(`${apiUrl}/${key}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }).then(response => {
+                    console.log("Responce : true", !response.ok)
+                    if (!response.ok) {
+                        console.log("response false ", response)
+                        throw new Error('Failed to delete data');
+                    }
+                    // return response.json();
+                }).then(data => {
+                    // console.log('Data deleted successfully:', data);
+                    // alert('Diet data deleted successfully!');
+                    window.location.reload();
+                }).catch(error => {
+                    console.error('Error deleting diet data:', error);
+                    alert('Failed to delete data. Please try again.');
+                });
+                // Window.location.reload();
+                // fetchDietData();
+
+            }
+
+        }
+
+        // Search data in table by name 
+        function searchDietData(query) {
+            let key = query.target.value;
+            // console.log("Query : -", key.length, key)
+            // console.log(`${apiUrl}/search/${key}`)
+            if (query.target.value.length > 0) {
+                fetch(`${apiUrl}/search/${key}`)
+                    .then(response => response.json())  // Parse the JSON response
+                    .then(data => {
+                        // Handle the search results (assuming data is an array or object)
+                        const dietTableBody = document.querySelector('#dietTable tbody');
+                        dietTableBody.innerHTML = '';
+
+                        if (data.length === 0) {
+                            dietTableBody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No data available</td></tr>';
+                            return;
+                        }
+
+                        data.forEach(item => {
+                            // console.log(item)
+                            let row = document.createElement('tr');
+                            row.innerHTML = `
+                            <td>${item.name}</td>
+                            <td>${item.earlyMorning}</td>
+                            <td>${item.breakfastTime}</td>
+                            <td>${item.lunchTime}</td>
+                            <td>${item.postLunchSnacks}</td>
+                            <td>${item.dinnerTime}</td>
+                            <td>${item.lateNightSnacks}</td>
+                            <td><a href="showpage.html?id=${item.id}">Show </a><br><a href="diet.html?id=${item.id}">Edit &#128393;</a><br><button onclick="delData('${item.id}')">Delete</button></td>
+                          
+                        `;
+                            dietTableBody.appendChild(row);
+                        });
+
+                    })
+                    .catch(error => {
+                        // Handle any errors (e.g., network issues)
+                        // console.error('Search error:', error);
+                        // alert('Error fetching data. Please try again.');
+                        document.getElementById("empty").style.display = "block"
+                    });
+            } else {
+                fetchDietData();
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>

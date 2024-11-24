@@ -1,0 +1,208 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 500px;
+            border: 2px solid #ccc;
+            padding: 30px;
+            text-align: left;
+            background-color: #fff;
+            position: relative;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        .header h2 {
+            margin-top: 0;
+            color: rgb(71, 206, 71);
+            font-size: 28px;
+        }
+
+        .label {
+            font-size: 16px;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .input-line {
+            border-bottom: 1px solid #ccc;
+            margin: 15px 0;
+            padding-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        input.date {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 10px;
+            background-color: rgb(71, 206, 71);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: rgb(51, 180, 51);
+        }
+
+        .disclaimer {
+            font-size: 10px;
+            color: red;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h2>Registration <br> with <br> PRAKRUTI NUTRITION</h2>
+            <p>Please fill in the details to create an account</p>
+        </div>
+
+        <!-- Registration Form -->
+        <form action="#" method="POST">
+            <div class="input-line">
+                <label for="name" class="label">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="input-line">
+                <label for="email" class="label">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+            </div>
+
+            <div class="input-line">
+                <label for="password" class="label">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Create a password" required>
+            </div>
+
+            <div class="input-line">
+                <label for="reg-date" class="label">Registration Date:</label>
+                <input type="date" class="date" id="reg-date" name="reg-date" >
+            </div>
+
+            <div class="input-line">
+                <label for="contact" class="label">Contact Number:</label>
+                <input type="tel" id="contact" name="contact" placeholder="Enter your contact number" required>
+            </div>
+
+            <button type="submit" class="button">Register</button>
+        </form>
+
+        <!-- Disclaimer (Optional) -->
+        <div class="disclaimer">
+            Disclaimer: Please ensure that the information you provide is correct. If you face any issues, contact
+            support.
+        </div>
+        <br>
+        <div class="disclaimer">
+            If you have already register to click login now <a href="login.html">Login </a>
+            <!-- New Registration to click here : <a href="registration.html">Registration</a> -->
+        </div>
+    </div>
+
+
+    <script>
+        // window.onload = function() {
+        //     let auth = JSON.parse(localStorage.getItem("token"))
+        //     if (auth && window.location.pathname !== "/registration.html") {
+        //         window.location.pathname = "registration.html";
+        //     }else{
+        //         window.location.pathname = "login.html";
+        //     }
+        // }
+        // Function to handle form submission and send data to the server
+        function registerUser(event) {
+            event.preventDefault();  // Prevent form from submitting in the default way
+
+            // Collect data from the form
+            const name = document.getElementById('name').value;
+            const loginId = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const date = document.getElementById('reg-date').value;
+            const mobile = document.getElementById('contact').value;
+
+            // Create an object to send to the API
+            const userData = {
+                name: name,
+                loginId: loginId,
+                password: password,
+                date: date,
+                mobile: mobile
+            };
+            // const apiUrl = 'http://localhost:8080/user';
+            const apiUrl = `https://prakritibackend.onrender.com/user`;
+
+            // Send a POST request to the server
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',  // Send data as JSON
+                },
+                body: JSON.stringify(userData)  // Convert the userData object to a JSON string
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json(); // Parse the response as JSON if the request was successful
+                    } else {
+                        throw new Error('Failed to register. Please try again.');
+                    }
+                })
+                .then(data => {
+                    console.log('Registration successful:', data);
+                    if(data?.message==="Fill"){
+                        alert('Fill the form !!');
+                    }else{
+                        alert('Registration successful!');
+                        window.location.pathname = '/login.html'; // Redirect to dashboard (or any other page)
+
+                    }
+                    
+                    // Optionally, redirect to a different page after successful registration
+                    // window.location.href = '/login';  // For example, redirect to login page
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Registration failed: ' + error.message);
+                });
+        }
+
+        // Add event listener to the form submit button
+        document.querySelector('form').addEventListener('submit', registerUser);
+    </script>
+
+</body>
+
+</html> -->

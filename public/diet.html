@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diet Chart</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            /* display: flex; */
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .container {
+            width: 700px;
+            border: 2px solid #ccc;
+            padding: 20px;
+            text-align: left;
+            background-color: #f9f9f9;
+            position: relative;
+            /* background-image: url("./image/logo.png");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain; */
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        .header h2 {
+            margin-top: 50px;
+            color: rgb(71, 206, 71);
+            font-size: 24px;
+        }
+
+        .header p {
+            font-size: 12px;
+        }
+
+        .label {
+            font-size: 16px;
+            margin-top: 1px;
+            display: block;
+        }
+
+        .input-line {
+            border-bottom: 1px solid #ccc;
+            margin: 10px 0;
+            padding-bottom: 5px;
+        }
+
+        .small-label {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .disclaimer {
+            font-size: 10px;
+            color: red;
+        }
+
+        .top-right-info {
+            position: absolute !important;
+            top: 10px;
+            right: 80px;
+            text-align: right;
+            font-size: 11px;
+        }
+
+        .translator {
+            width: 100%;
+            height: 100px;
+            resize: none;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            padding: 2px 0;
+            background-color: #f9f9f9;
+        }
+
+        .name {
+            height: 40px;
+
+        }
+
+        /* input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            font-size: 14px;
+            margin-top: 5px;
+            border: 1px none #ccc;
+            border-radius: 4px;
+
+        } */
+        /* 
+        .translator:focus {
+            background-color: rgb(245, 191, 245);
+        }
+
+        .translator:hover {
+            background-color: rgb(245, 191, 245);
+        } */
+
+        /* .translator[disabled]:hover {
+            background-color: #f9f9f9;
+        } */
+
+        .date {
+
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            border-style: none none solid none;
+        }
+
+        .dropdown-container {
+            display: inline-block;
+            position: relative;
+            width: 150px;
+        }
+
+        .dropdown-container ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            width: 100%;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 999;
+        }
+
+        .dropdown-container.active ul {
+            display: block;
+        }
+
+        .option {
+            padding: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .option:hover {
+            background-color: #f0f0f0;
+        }
+
+        .selected {
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .button {
+            width: 100%;
+            padding: 10px;
+            background-color: rgb(71, 206, 71);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            margin: 0 !important;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: rgb(51, 180, 51);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="#">Home</a>
+        <a href="diet.html">Add Patient</a>
+        <a href="dietlist.html">Diet list</a>
+        <a href="login.html" onclick="javascript:localStorage.clear()">Login</a>
+    </nav>
+    <div class="container">
+        <div class="header">
+
+            <img style="width: 70px; border-radius:10px;float: left;" src="./image/pn.jpeg" alt="">
+            <h2>PRAKRUTI NUTRITION </h2>
+            <p>Diet Chart (आहार तालिका)</p>
+
+        </div>
+        <div class="top-right-info">
+            <div>Date : <input type="date" id="startDate"></div>
+            <div>Next Consultation Date : <input type="date" id="nextDate"></div>
+        </div>
+
+        <!-- Language Selection Dropdown -->
+        <!-- <div class="dropdown-container" id="input-language">
+            <div class="selected">English</div>
+            <ul>
+                <li class="option" data-value="en">English</li>
+                <li class="option" data-value="hi">Hindi</li>
+                Add other languages here
+            </ul>
+        </div>-->
+
+        <!-- <div class="dropdown-container" id="output-language">
+            <div class="selected">Hindi</div>
+            <ul>
+                <li class="option" data-value="en">English</li>
+                <li class="option" data-value="hi">Hindi</li>
+            </ul>
+        </div>  -->
+
+        <!-- <div class="dropdown-container"> -->
+        <!-- Select language : -->
+        <select name="lang" id="output-language" required>
+            <option value="hi">Hindi</option>
+            <option value="en">English</option>
+        </select>
+        <!-- </div> -->
+
+
+        <!-- Input Fields -->
+        <div class="input-line">
+            <label for="patient-name" class="label" data-translate="Patient Name: (नाम)">Patient Name (नाम): </label>
+            <textarea class="translator name" id="patient-name" placeholder="Enter patient's name" required></textarea>
+            <textarea class="translator name" id="patient-name-out" disabled></textarea>
+        </div>
+
+        <div class="input-line">
+            <label for="early-morning" class="label" data-translate="Early Morning : (प्रातः उठने पर)">Early Morning :
+                (प्रातः उठने पर)</label>
+            <textarea class="translator" id="early-morning" placeholder="Enter Early Morning details"></textarea>
+            <textarea class="translator" id="early-morning-out" readonly disabled></textarea>
+        </div>
+
+        <div class="input-line">
+            <label for="breakfast-time" class="label" data-translate="Breakfast Time : (सुबह का नाश्ता)">Breakfast Time
+                : (सुबह का नाश्ता)</label>
+            <textarea class="translator" id="breakfast-time" placeholder="Enter Breakfast Time"></textarea>
+            <textarea class="translator" id="breakfast-time-out" readonly disabled></textarea>
+        </div>
+
+        <div class="input-line">
+            <label for="lunch-time" class="label" data-translate="Lunch Time : (भोजन)">Lunch Time : (भोजन)</label>
+            <textarea class="translator" id="lunch-time" placeholder="Enter Lunch Time"></textarea>
+            <textarea class="translator" id="lunch-time-out" readonly disabled></textarea>
+        </div>
+
+        <div class="input-line">
+            <label for="post-lunch-snacks" class="label" data-translate="Post Lunch Snacks : (शाम का अल्पाहार)">Post
+                Lunch Snacks : (शाम का अल्पाहार)</label>
+            <textarea class="translator" id="post-lunch-snacks" placeholder="Enter Post Lunch Snacks"></textarea>
+            <textarea class="translator" id="post-lunch-snacks-out" readonly disabled></textarea>
+        </div>
+
+        <div class="input-line">
+            <label for="dinner-time" class="label" data-translate="Dinner Time : (रात का भोजन)">Dinner Time : (रात का
+                भोजन)</label>
+            <textarea class="translator" id="dinner-time" placeholder="Enter Dinner Time"></textarea>
+            <textarea class="translator" id="dinner-time-out" readonly disabled></textarea>
+        </div>
+
+        <div class="input-line">
+            <label for="late-night-snacks" class="label" data-translate="Late Night Snacks : (रात का अल्पाहार)">Late
+                Night
+                Snacks : (रात का अल्पाहार)</label>
+            <textarea class="translator" id="late-night-snacks" placeholder="Enter Late Night Snacks"></textarea>
+            <textarea class="translator" id="late-night-snacks-out" readonly disabled></textarea>
+        </div>
+        <div class="input-line">
+            <label for="remark" class="label" data-translate="Remark : (टिप्पणी)">Remark : (टिप्पणी)</label>
+            <textarea class="translator" id="remark" placeholder="Enter Late Night Snacks"></textarea>
+            <textarea class="translator" id="remark-out" readonly disabled></textarea>
+        </div>
+
+        <button type="submit" class="button">submit</button><br><br>
+        <button type="submit" class="button" id="clone">clone data</button>
+        <br><br>
+        <div class="disclaimer">
+            Disclaimer: This Diet plan is very specific to the above-mentioned person's BMI, age, gender, blood group,
+            lifestyle, family history, and associated diseases. Not to be used for other persons as it may cause calorie
+            imbalance and may have adverse impacts.
+        </div>
+        <br>
+        <div class="disclaimer">
+            Go to login page <a href="login.html">Login here</a>
+            <!-- Go to Registration page <a href="registration.html">New Registration to click here</a> -->
+            Diet list <a href="dietlist.html">Diet List</a>
+        </div>
+    </div>
+
+    <script>
+        let auth = localStorage.getItem("token")
+        // console.log(auth)
+        if (!auth || auth === null) {
+            window.location.pathname = "login.html"
+        }
+        const urlString = window.location.href;
+        // Regular expression to match the query string
+        const regex = /[?&]id=([^&]+)/;
+        const matches = urlString.match(regex);
+        let id = "";
+        // Check if 'id' was found
+        if (matches && matches[1]) {
+            id = matches[1];
+            // console.log('ID:', id);  // 673446353fffa1d39d60ba77
+        }
+        // if (id) {
+        // const apiUrl = `http://localhost:8080/diet/${id}`;
+        // }else{
+        // const apiUrl = `http://localhost:8080/diet`;
+        // const apiUrl = `https://prakritibackend.onrender.com/diet`;
+        const apiUrl = `http://localhost:8080/api/diet`;
+
+
+        // }
+
+        // const dropdowns = document.querySelectorAll(".dropdown-container"),
+        //     inputLanguageDropdown = document.querySelector("#input-language"),
+        //     outputLanguageDropdown = document.querySelector("#output-language");
+
+        // const inputFields = document.querySelectorAll('input[type="text"]');
+        const inputFields = document.querySelectorAll('.translator');
+
+        // Translator :- translate only one field at a time.
+        function translateText(inputText, inputLanguage, outputLanguage) {
+            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${inputLanguage}&tl=${outputLanguage}&dt=t&q=${encodeURI(inputText)}`;
+            return fetch(url)
+                .then(response => response.json())
+                .then(json => {
+                    return json[0].map(item => item[0]).join("");
+                })
+                .catch(error => {
+                    console.error("Error translating:", error);
+                    return inputText;  // return original if translation fails
+                });
+        }
+
+        inputFields.forEach(field => {
+            field.addEventListener('input', (e) => {
+                const inputText = e.target.value;
+                // const inputLanguage = inputLanguageDropdown.querySelector(".selected").dataset.value;
+                // const outputLanguage = outputLanguageDropdown.querySelector(".selected").dataset.value;
+
+                const inputLanguage = "en";
+                const outputLanguage = document.getElementById("output-language").value;
+                // const outputLanguage = "hi";
+
+                // Translate the text entered by the user
+                translateText(inputText, inputLanguage, outputLanguage).then(translatedText => {
+                    // Check the field ID to update the correct output field
+                    const outputField = document.querySelector(`#${e.target.id}-out`);
+                    if (outputField) {
+                        outputField.value = translatedText; // Update the output field with translated text
+                    }
+                });
+            });
+        });
+
+        // dropdowns.forEach(dropdown => {
+        //     dropdown.addEventListener("click", (e) => {
+        //         dropdown.classList.toggle("active");
+        //     });
+
+        //     dropdown.querySelectorAll(".option").forEach(item => {
+        //         item.addEventListener("click", (e) => {
+        //             dropdown.querySelectorAll(".option").forEach(item => {
+        //                 item.classList.remove("active");
+        //             });
+        //             item.classList.add("active");
+        //             const selected = dropdown.querySelector(".selected");
+        //             selected.innerHTML = item.innerHTML;
+        //             selected.dataset.value = item.dataset.value;
+        //         });
+        //     });
+        // });
+
+        // document.addEventListener("click", (e) => {
+        //     dropdowns.forEach(dropdown => {
+        //         if (!dropdown.contains(e.target)) {
+        //             dropdown.classList.remove("active");
+        //         }
+        //     });
+        // });
+
+
+        // save data on the server
+
+        function saveFormData(isClone) {
+            // console.log("Is true od the data  isClone:-", isClone)
+            // Get the values from the form inputs :ENglish fields
+            const name = document.getElementById('patient-name').value;
+            const earlyMorning = document.getElementById('early-morning').value;
+            const breakfastTime = document.getElementById('breakfast-time').value;
+            const lunchTime = document.getElementById('lunch-time').value;
+            const postLunchSnacks = document.getElementById('post-lunch-snacks').value;
+            const dinnerTime = document.getElementById('dinner-time').value;
+            const lateNightSnacks = document.getElementById('late-night-snacks').value;
+            const startDate = document.getElementById('startDate').value;
+            const nextDate = document.getElementById('nextDate').value;
+            const remark = document.getElementById('remark').value;
+
+            // Get the values from the form inputs  :- HIndi fields
+            const nameOut = document.getElementById('patient-name-out').value;
+            const earlyMorningOut = document.getElementById('early-morning-out').value;
+            const breakfastTimeOut = document.getElementById('breakfast-time-out').value;
+            const lunchTimeOut = document.getElementById('lunch-time-out').value;
+            const postLunchSnacksOut = document.getElementById('post-lunch-snacks-out').value;
+            const dinnerTimeOut = document.getElementById('dinner-time-out').value;
+            const lateNightSnacksOut = document.getElementById('late-night-snacks-out').value;
+            const remarkOut = document.getElementById('remark-out').value;
+
+            // Create an object to hold the data
+            const formData = {
+                name: name,
+                earlyMorning: earlyMorning,
+                breakfastTime: breakfastTime,
+                lunchTime: lunchTime,
+                postLunchSnacks: postLunchSnacks,
+                dinnerTime: dinnerTime,
+                lateNightSnacks: lateNightSnacks,
+                appoinmentDate: startDate,
+                nextDate: nextDate,
+                remark: remark,
+
+                nameOut: nameOut,
+                earlyMorningOut: earlyMorningOut,
+                breakfastTimeOut: breakfastTimeOut,
+                lunchTimeOut: lunchTimeOut,
+                postLunchSnacksOut: postLunchSnacksOut,
+                dinnerTimeOut: dinnerTimeOut,
+                lateNightSnacksOut: lateNightSnacksOut,
+                remarkOut: remarkOut,
+            };
+
+
+
+            // Send the form data to the server using fetch API
+            if (id && isClone) {
+                // console.log("if and is true ",id,isClone)
+                fetch(`${apiUrl}/${id}`, {
+                    method: 'PUT', // Set the request method to POST
+                    headers: {
+                        'Content-Type': 'application/json' // Indicate that we're sending JSON
+                    },
+                    body: JSON.stringify(formData) // Convert the formData object to a JSON string
+                })
+                    .then(response => response.json()) // Parse the JSON response
+                    .then(data => {
+                        console.log('Success:', data);
+                        // alert('Form data saved successfully!');
+                        if (data?.message === 'Failed to add diet to database') {
+                            alert('Please fill the form! or server error');
+                        } else {
+                            // console.log(data)
+                            alert('Form data saved successfully!');
+                            window.location.pathname = "dietlist.html"
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('There was an error saving the data.');
+                    });
+            } else {
+
+                fetch(apiUrl, {
+                    method: 'POST', // Set the request method to POST
+                    headers: {
+                        'Content-Type': 'application/json' // Indicate that we're sending JSON
+                    },
+                    body: JSON.stringify(formData) // Convert the formData object to a JSON string
+                })
+                    .then(response => response.json()) // Parse the JSON response
+                    .then(data => {
+                        console.log(data)
+
+                        if (data?.message === 'Failed to add diet to database') {
+                            alert('Please fill the form! or Server error');
+                        } else {
+                            // console.log("data  isClone:",isClone)
+                            alert('Form data saved successfully!');
+                            window.location.pathname = "dietlist.html"
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('There was an error saving the data.');
+                    });
+            }
+        }
+
+        // Add event listener to the submit button to call saveFormData on click
+        document.querySelector('.button').addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default form submission
+            saveFormData("true"); // Call the function to save the form data
+        });
+
+        document.querySelector('#clone').addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default form submission
+            saveFormData(); // Call the function to save the form data
+        });
+
+
+
+
+
+        function fetchDietData() {
+            // Replace the URL with the correct API endpoint including the unique ID
+            // const apiUrl = `http://localhost:8080/diet/${id}`;
+
+            fetch(`${apiUrl}/${id}`) // API endpoint
+                .then(response => response.json()) // Parse the JSON response
+                .then(data => {
+                    // console.log("data :", data)
+                    const NextDate = new Date(data?.nextDate).toISOString().split('T')[0];
+                    const AppoinmentDate = new Date(data?.appoinmentDate).toISOString().split('T')[0];
+
+                    document.getElementById('patient-name').value = data?.name;
+                    document.getElementById('early-morning').value = data?.earlyMorning;
+                    document.getElementById('breakfast-time').value = data?.breakfastTime;
+                    document.getElementById('lunch-time').value = data?.lunchTime;
+                    document.getElementById('post-lunch-snacks').value = data?.postLunchSnacks;
+                    document.getElementById('dinner-time').value = data?.dinnerTime;
+                    document.getElementById('late-night-snacks').value = data?.lateNightSnacks;
+                    document.getElementById('startDate').value = AppoinmentDate;
+                    document.getElementById('nextDate').value = NextDate;
+                    document.getElementById('remark').value = data?.remark;
+
+                    // Get the values from the form inputs
+                    document.getElementById('patient-name-out').value = data?.nameOut;
+                    document.getElementById('early-morning-out').value = data?.earlyMorningOut;
+                    document.getElementById('breakfast-time-out').value = data?.breakfastTimeOut;
+                    document.getElementById('lunch-time-out').value = data?.lunchTimeOut;
+                    document.getElementById('post-lunch-snacks-out').value = data?.postLunchSnacksOut;
+                    document.getElementById('dinner-time-out').value = data?.dinnerTimeOut;
+                    document.getElementById('late-night-snacks-out').value = data?.lateNightSnacksOut;
+                    document.getElementById('remark-out').value = data?.remarkOut;
+                })
+                .catch(error => {
+                    console.error('Error fetching diet data:', error);
+                    document.getElementById('loading').textContent = 'Failed to load data. Please try again later.';
+                });
+        }
+
+        // Call the fetchDietData function when the page loads
+        if (id) {
+            window.onload = fetchDietData;
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            background-color: #f4f4f4;
+        } */
+
+        .container {
+            width: 500px;
+            border: 2px solid #ccc;
+            padding: 30px;
+            text-align: left;
+            background-color: #fff;
+            position: relative;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-image: url("./image/logo.png");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+        }
+
+            /* .header {
+                text-align: center;
+            } */
+
+        /* .header h2 {
+            margin-top: 0;
+            color: rgb(71, 206, 71);
+            font-size: 28px;
+        } */
+
+        /* .label {
+            font-size: 16px;
+            margin-top: 10px;
+            display: block;
+        } */
+
+        .input-line {
+            border-bottom: 1px solid #ccc;
+            margin: 15px 0;
+            padding-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 19px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 4px;
+
+        }
+
+       .button {
+            width: 100%;
+            /* padding: 10px; */
+            background-color: rgb(71, 206, 71);
+            border: none;
+            border-radius: 4px;
+            /* color: white; */
+            font-size: 16px;
+            cursor: pointer;
+        }
+ /* 
+        .button:hover {
+            background-color: rgb(51, 180, 51);
+        } */
+
+        /* .forgot-password {
+            font-size: 14px;
+            text-align: center;
+            margin-top: 10px;
+            display: block;
+        } */
+
+        /* .disclaimer {
+            font-size: 10px;
+            color: red;
+            text-align: center;
+            margin-top: 20px;
+        } */
+    </style>
+</head>
+
+<body onload="isrender()">
+    <nav>
+        <a href="#">Home</a>
+        <a href="diet.html">Add Patient</a>
+        <a href="dietlist.html">Diet list</a>
+        <a href="login.html" onclick="javascript:localStorage.clear()" >Login</a>
+    </nav>
+    <div class="container">
+        <div class="header">
+            <img style="width: 70px; border-radius:10px;float: left;" src="./image/pn.jpeg" alt="">
+
+            <h2>PRAKRUTI NUTRITION <br> (आहार तालिका)</h2>
+            <p>Diet Chart (आहार तालिका)</p>
+
+        </div>
+        
+
+        <!-- Login Form -->
+        <form action="#" method="POST">
+            <div class="input-line">
+                <label for="username" class="label">Login id:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your email id" required>
+            </div>
+
+            <div class="input-line">
+                <label for="password" class="label">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="button">Login</button>
+
+            <!-- <a href="#" class="forgot-password">Forgot Password?</a> -->
+        </form>
+
+        <!-- Disclaimer (Optional) -->
+        <div class="disclaimer">
+            Disclaimer: Please ensure that you have entered the correct credentials. If you face any issues, contact
+            support.
+        </div>
+        <br>
+        <div class="disclaimer">
+            <!-- Go to login page <a href="login.html">Login here</a> -->
+            New Registration to click here : <a href="index.html">Entry data</a> <br>
+            Neutrition list : <a href="diet.html"> Diet chart</a>
+
+        </div>
+    </div>
+
+
+
+    <script>
+
+        function isrender() {
+            let auth = JSON.parse(localStorage.getItem("token"));
+            // console.log(auth, !auth)
+            if (!auth && window.location.pathname === "login.html") {
+                // console.log("lohin nahi hona chahiye")
+                localStorage.clear();
+                window.location.pathname = "login.html";
+            }
+        }
+        // Function to handle form submission and login
+        function loginUser(event) {
+            event.preventDefault();  // Prevent the form from submitting in the default way
+
+            // Collect the form data
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Create an object to send to the API
+            const loginData = {
+                loginId: username,
+                password: password
+            };
+            // const apiUrl = 'http://localhost:8080/login';
+            // const apiUrl = `https://prakritibackend.onrender.com/login`;
+            const apiUrl = `http://localhost:8080/api/login`;
+            
+
+            // Send a POST request to the login API
+            fetch(apiUrl, {
+                method: 'POST', // Use POST method to send data
+                headers: {
+                    'Content-Type': 'application/json'  // Set content type as JSON
+                },
+                body: JSON.stringify(loginData)  // Convert the login data to JSON
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json(); // Parse the JSON response
+                    } else {
+                        throw new Error('Login failed! Please check your credentials.');
+                    }
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    if (data?.message === "No result found") {
+                        alert('No data found !!');
+                    } else {
+                        localStorage.setItem("token", JSON.stringify(data));
+                        alert('Login successful!');
+                        // Optionally, you can store the response data (e.g., token) in localStorage or sessionStorage
+                        // For example: localStorage.setItem('authToken', data.token);
+                        window.location.pathname = '/diet.html';
+
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Login failed. ' + error.message);
+                });
+        }
+      
+        // Add event listener to the form submit button
+        document.querySelector('form').addEventListener('submit', loginUser);
+    </script>
+
+
+
+</body>
+
+</html>
